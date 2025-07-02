@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Railway-style background -->
+  <rect width="32" height="32" rx="6" fill="#0F0F0F"/>
+  
+  <!-- Railway-style logo inspired by their actual branding -->
+  <g transform="translate(6, 6)">
+    <!-- Main railway tracks in Railway's style -->
+    <rect x="0" y="8" width="20" height="2" rx="1" fill="#8B5CF6"/>
+    <rect x="0" y="12" width="20" height="2" rx="1" fill="#8B5CF6"/>
+    
+    <!-- Cross ties -->
+    <rect x="2" y="6" width="2" height="10" rx="1" fill="#A855F7" opacity="0.6"/>
+    <rect x="6" y="6" width="2" height="10" rx="1" fill="#A855F7" opacity="0.6"/>
+    <rect x="10" y="6" width="2" height="10" rx="1" fill="#A855F7" opacity="0.6"/>
+    <rect x="14" y="6" width="2" height="10" rx="1" fill="#A855F7" opacity="0.6"/>
+    <rect x="18" y="6" width="2" height="10" rx="1" fill="#A855F7" opacity="0.6"/>
+    
+    <!-- Modern accent dot (Railway-style) -->
+    <circle cx="16" cy="10" r="2" fill="#EC4899"/>
+  </g>
+</svg>

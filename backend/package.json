@@ -1,0 +1,31 @@
+{
+  "name": "boilerplate-backend",
+  "version": "1.0.0",
+  "description": "Backend for fullstack boilerplate using ElysiaJS",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir ./dist --target bun",
+    "start": "bun run dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "bun run src/db/migrate.ts",
+    "db:migrate:status": "bun run src/db/migrate.ts status",
+    "db:migrate:rollback": "bun run src/db/migrate.ts rollback"
+  },
+  "dependencies": {
+    "elysia": "^1.1.23",
+    "postgres": "^3.4.3",
+    "@elysiajs/cors": "^1.1.1",
+    "@sinclair/typebox": "^0.33.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "bun-types": "latest",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  }
+}
