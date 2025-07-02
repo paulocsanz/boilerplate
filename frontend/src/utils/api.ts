@@ -2,17 +2,32 @@ import type { User, CreateUserRequest, UpdateUserRequest, DeleteResponse } from 
 
 // Get the API base URL based on environment
 function getApiBaseUrl(): string {
+  console.log('Environment check:', {
+    DEV: import.meta.env.DEV,
+    BACKEND_URL: import.meta.env.BACKEND_URL,
+    MODE: import.meta.env.MODE,
+    PROD: import.meta.env.PROD
+  });
+  
   // In development, use localhost
   if (import.meta.env.DEV) {
+    console.log('Using localhost for development');
     return 'http://localhost:3001';
   }
   
-  // In production, use relative path (same domain)
-  // This works when frontend and backend are on the same Railway project
+  // In production, use BACKEND_URL if available, otherwise relative path
+  if (import.meta.env.BACKEND_URL) {
+    console.log('Using BACKEND_URL:', import.meta.env.BACKEND_URL);
+    return import.meta.env.BACKEND_URL;
+  }
+  
+  // Fallback to relative path (same domain)
+  console.log('Using relative path fallback');
   return '';
 }
 
 export const API_BASE_URL = getApiBaseUrl();
+console.log('Final API_BASE_URL:', API_BASE_URL);
 
 // Create a simpler API client using fetch with type safety
 class ApiClient {

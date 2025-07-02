@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { User } from '../types/api';
 import { api } from '../utils/api';
 
 export function UserList() {

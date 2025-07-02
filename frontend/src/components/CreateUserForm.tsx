@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { User, CreateUserRequest } from '../types/api';
+import { CreateUserRequest } from '../types/api';
 import { api } from '../utils/api';
 
 export function CreateUserForm() {
