@@ -1,22 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { User } from '../types';
-
-async function createUser(userData: { username: string; email: string }): Promise<User> {
-  const response = await fetch('http://localhost:3001/api/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to create user');
-  }
-
-  return response.json();
-}
+import { User, CreateUserRequest } from '../types/api';
+import { api } from '../utils/api';
 
 export function CreateUserForm() {
   const [username, setUsername] = useState('');
@@ -25,7 +10,7 @@ export function CreateUserForm() {
   const queryClient = useQueryClient();
   
   const mutation = useMutation({
-    mutationFn: createUser,
+    mutationFn: (userData: CreateUserRequest) => api.users.create(userData),
     onSuccess: () => {
       // Invalidate and refetch users list
       queryClient.invalidateQueries({ queryKey: ['users'] });

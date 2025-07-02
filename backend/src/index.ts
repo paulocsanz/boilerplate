@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
+import { swagger } from '@elysiajs/swagger';
 import { createUser, getUserById, getAllUsers, updateUser, deleteUser } from './controllers/users.js';
 import { MigrationRunner } from './db/migrate.js';
 import { error } from './middleware/error.js';
@@ -54,13 +55,35 @@ async function startServer() {
 
   const app = new Elysia()
     .use(cors())
+    .use(swagger({
+      documentation: {
+        info: {
+          title: 'Fullstack Boilerplate API',
+          version: '1.0.0',
+          description: 'A modern full-stack boilerplate API with user management',
+        },
+        tags: [
+          { name: 'health', description: 'Health check endpoints' },
+          { name: 'users', description: 'User management endpoints' }
+        ],
+        servers: [
+          { url: 'http://localhost:3001', description: 'Development server' }
+        ]
+      }
+    }))
     .use(error())
     .derive(() => ({
       ctx: createAppContext()
     }))
     
     // Health check
-    .get('/', () => ({ message: 'Fullstack Boilerplate API', status: 'healthy' }))
+    .get('/', () => ({ message: 'Fullstack Boilerplate API', status: 'healthy' }), {
+      detail: {
+        tags: ['health'],
+        summary: 'Health check',
+        description: 'Returns the API status and confirms the service is running'
+      }
+    })
     
     // Users routes with validation and type safety
     .group('/api/users', (app) =>
@@ -69,21 +92,36 @@ async function startServer() {
           const users = await getAllUsers(ctx);
           return users;
         }, {
-          response: UsersResponseSchema
+          response: UsersResponseSchema,
+          detail: {
+            tags: ['users'],
+            summary: 'Get all users',
+            description: 'Retrieve a list of all users in the system'
+          }
         })
         .post('/', async ({ ctx, body }) => {
           const user = await createUser(ctx, body.username, body.email);
           return user;
         }, {
           body: CreateUserSchema,
-          response: UserResponseSchema
+          response: UserResponseSchema,
+          detail: {
+            tags: ['users'],
+            summary: 'Create a new user',
+            description: 'Create a new user with username and email'
+          }
         })
         .get('/:id', async ({ ctx, params }) => {
           const user = await getUserById(ctx, params.id);
           return user;
         }, {
           params: UserParamsSchema,
-          response: UserResponseSchema
+          response: UserResponseSchema,
+          detail: {
+            tags: ['users'],
+            summary: 'Get user by ID',
+            description: 'Retrieve a specific user by their unique identifier'
+          }
         })
         .put('/:id', async ({ ctx, params, body }) => {
           const user = await updateUser(ctx, params.id, body);
@@ -91,14 +129,24 @@ async function startServer() {
         }, {
           params: UserParamsSchema,
           body: UpdateUserSchema,
-          response: UserResponseSchema
+          response: UserResponseSchema,
+          detail: {
+            tags: ['users'],
+            summary: 'Update user',
+            description: 'Update an existing user\'s information'
+          }
         })
         .delete('/:id', async ({ ctx, params }) => {
           const result = await deleteUser(ctx, params.id);
           return result;
         }, {
           params: UserParamsSchema,
-          response: DeleteResponseSchema
+          response: DeleteResponseSchema,
+          detail: {
+            tags: ['users'],
+            summary: 'Delete user',
+            description: 'Remove a user from the system'
+          }
         })
     )
     
@@ -110,7 +158,8 @@ async function startServer() {
 const app = await startServer();
 
 console.log(`🚀 Server is running at http://localhost:${app.server?.port}`);
-console.log('📚 API Documentation:');
+console.log(`📚 Swagger UI available at http://localhost:${app.server?.port}/swagger`);
+console.log('📖 API Documentation:');
 console.log('  GET  / - Health check');
 console.log('  GET  /api/users - Get all users');
 console.log('  POST /api/users - Create user');

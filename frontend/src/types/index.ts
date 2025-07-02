@@ -1,7 +1,7 @@
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
-}
+// Re-export API types for backwards compatibility
+export type { 
+  User, 
+  CreateUserRequest, 
+  UpdateUserRequest, 
+  DeleteResponse 
+} from './api';
