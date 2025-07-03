@@ -38,6 +38,7 @@ class ApiClient {
   }
 
   async get<T>(endpoint: string): Promise<T> {
+    console.log(this.baseUrl, endpoint);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'GET',
       headers: {
