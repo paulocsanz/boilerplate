@@ -1,5 +1,30 @@
-async function deployToRailway(apiToken: string, projectName: string, githubRepo: string) {
+async function getDefaultBranch(githubRepo: string): Promise<string> {
+  try {
+    const [owner, repo] = githubRepo.split('/');
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+    
+    if (!response.ok) {
+      console.warn(`Failed to fetch GitHub repo info: ${response.status}`);
+      return 'main';
+    }
+    
+    const data = await response.json();
+    return data.default_branch || 'main';
+  } catch (error) {
+    console.warn('Error fetching GitHub repo info:', error);
+    return 'main';
+  }
+}
+
+async function deployToRailway(apiToken: string, projectName: string, githubRepo: string, branch?: string) {
   const API_URL = 'https://backboard.railway.app/graphql/v2';
+  
+  // Fetch default branch if not provided
+  if (!branch) {
+    console.log(`Fetching default branch for ${githubRepo}...`);
+    branch = await getDefaultBranch(githubRepo);
+    console.log(`Using branch: ${branch}`);
+  }
   
   const headers = {
     'Authorization': `Bearer ${apiToken}`,
@@ -117,14 +142,15 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
       environmentId,
       name: "backend",
       source: {
-        repo: githubRepo
+        repo: githubRepo,
+        branch: branch
       },
       variables: backendVars
     }
   });
 
   const backendId = backendData.data.serviceCreate.id;
-  console.log(`Created backend service (${backendId})`);
+  console.log(`Created backend service (${backendId}) from branch: ${branch}`);
 
   // Create frontend service
   console.log('\nCreating frontend service...');
@@ -134,13 +160,14 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
       environmentId,
       name: "frontend",
       source: {
-        repo: githubRepo
+        repo: githubRepo,
+        branch: branch
       }
     }
   });
 
   const frontendId = frontendData.data.serviceCreate.id;
-  console.log(`Created frontend service (${frontendId})`);
+  console.log(`Created frontend service (${frontendId}) from branch: ${branch}`);
 
   // Update service instances to set rootDirectory
   console.log('\nSetting up root directories...');
@@ -229,12 +256,18 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
 const RAILWAY_API_TOKEN = process.env.RAILWAY_API_TOKEN || '';
 const PROJECT_NAME = 'fullstack-boilerplate';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'paulocsanz/boilerplate';
+const BRANCH = process.env.BRANCH; // Optional - will fetch default branch if not provided
 
 if (!RAILWAY_API_TOKEN) {
   console.error('Please set RAILWAY_API_TOKEN environment variable');
   process.exit(1);
 }
 
-deployToRailway(RAILWAY_API_TOKEN, PROJECT_NAME, GITHUB_REPO)
+console.log(`Deploying from repository: ${GITHUB_REPO}`);
+if (BRANCH) {
+  console.log(`Using specified branch: ${BRANCH}`);
+}
+
+deployToRailway(RAILWAY_API_TOKEN, PROJECT_NAME, GITHUB_REPO, BRANCH)
   .then(() => console.log('Deployment initiated successfully'))
   .catch(error => console.error('Deployment failed:', error));
