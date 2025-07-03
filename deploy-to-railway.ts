@@ -239,11 +239,11 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
       projectId,
       environmentId,
       serviceId: frontendId,
-      name: 'BACKEND_URL',
+      name: 'VITE_BACKEND_URL',
       value: 'https://${{backend.RAILWAY_PUBLIC_DOMAIN}}'
     }
   });
-  console.log('Set BACKEND_URL reference using Railway variable reference');
+  console.log('Set VITE_BACKEND_URL reference using Railway variable reference');
 
   console.log(`\nProject ${projectName} created successfully!`);
   console.log(`Project ID: ${projectId}`);

@@ -4,7 +4,7 @@ import type { User, CreateUserRequest, UpdateUserRequest, DeleteResponse } from 
 function getApiBaseUrl(): string {
   console.log('Environment check:', {
     DEV: import.meta.env.DEV,
-    BACKEND_URL: import.meta.env.BACKEND_URL,
+    VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
     MODE: import.meta.env.MODE,
     PROD: import.meta.env.PROD
   });
@@ -15,10 +15,10 @@ function getApiBaseUrl(): string {
     return 'http://localhost:3001';
   }
   
-  // In production, use BACKEND_URL if available, otherwise relative path
-  if (import.meta.env.BACKEND_URL) {
-    console.log('Using BACKEND_URL:', import.meta.env.BACKEND_URL);
-    return import.meta.env.BACKEND_URL;
+  // In production, use VITE_BACKEND_URL if available, otherwise relative path
+  if (import.meta.env.VITE_BACKEND_URL) {
+    console.log('Using VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
+    return import.meta.env.VITE_BACKEND_URL;
   }
   
   // Fallback to relative path (same domain)
