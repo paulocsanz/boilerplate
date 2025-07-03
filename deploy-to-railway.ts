@@ -183,7 +183,8 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
     environmentId,
     serviceId: backendId,
     input: {
-      rootDirectory: "backend"
+      rootDirectory: "backend",
+      appSleep: true
     }
   }, false);
   console.log('Set backend root directory');
@@ -193,7 +194,8 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
     environmentId,
     serviceId: frontendId,
     input: {
-      rootDirectory: "frontend"
+      rootDirectory: "frontend",
+      appSleep: true
     }
   }, false);
   console.log('Set frontend root directory');
@@ -239,11 +241,11 @@ async function deployToRailway(apiToken: string, projectName: string, githubRepo
       projectId,
       environmentId,
       serviceId: frontendId,
-      name: 'VITE_BACKEND_URL',
+      name: 'VITE_API_URL',
       value: 'https://${{backend.RAILWAY_PUBLIC_DOMAIN}}'
     }
   });
-  console.log('Set VITE_BACKEND_URL reference using Railway variable reference');
+  console.log('Set VITE_API_URL reference using Railway variable reference');
 
   console.log(`\nProject ${projectName} created successfully!`);
   console.log(`Project ID: ${projectId}`);

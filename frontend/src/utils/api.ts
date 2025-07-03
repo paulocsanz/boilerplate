@@ -2,23 +2,15 @@ import type { User, CreateUserRequest, UpdateUserRequest, DeleteResponse } from 
 
 // Get the API base URL based on environment
 function getApiBaseUrl(): string {
-  console.log('Environment check:', {
-    DEV: import.meta.env.DEV,
-    VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
-    MODE: import.meta.env.MODE,
-    PROD: import.meta.env.PROD
-  });
-  
   // In development, use localhost
   if (import.meta.env.DEV) {
     console.log('Using localhost for development');
     return 'http://localhost:3001';
   }
   
-  // In production, use VITE_BACKEND_URL if available, otherwise relative path
-  if (import.meta.env.VITE_BACKEND_URL) {
-    console.log('Using VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
-    return import.meta.env.VITE_BACKEND_URL;
+  // In production, use VITE_API_URL if available, otherwise relative path
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
   }
   
   // Fallback to relative path (same domain)
@@ -27,7 +19,6 @@ function getApiBaseUrl(): string {
 }
 
 export const API_BASE_URL = getApiBaseUrl();
-console.log('Final API_BASE_URL:', API_BASE_URL);
 
 // Create a simpler API client using fetch with type safety
 class ApiClient {
@@ -38,7 +29,6 @@ class ApiClient {
   }
 
   async get<T>(endpoint: string): Promise<T> {
-    console.log(this.baseUrl, endpoint);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'GET',
       headers: {
